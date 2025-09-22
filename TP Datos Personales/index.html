@@ -1,79 +1,259 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Visualizaciones de uso de transporte público</title>
+
+  <!-- Fuente Google (títulos + texto) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0b0d10;
+      --card:#11151a;
+      --ink:#e8eef6;
+      --ink-soft:#b9c2cf;
+      --accent:#4dd2ff;
+      --muted:#7f8a99;
+      --ring: rgba(77,210,255,.25);
+    }
+
+    /* Layout base */
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#0b0d10 0%, #0d1117 100%);
+      color:var(--ink);
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      line-height:1.45;
+    }
+
+    .container{
+      max-width:1100px;
+      margin-inline:auto;
+      padding:28px 18px 64px;
+    }
+
+    /* Header */
+    .page-title{
+      font-family:Outfit, Inter, sans-serif;
+      font-weight:800;
+      letter-spacing:.2px;
+      font-size:clamp(26px, 2.6vw + 12px, 44px);
+      margin:8px 0 6px;
+      background:linear-gradient(90deg,#fff,#a7e9ff 60%,#59d0ff);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+
+    .page-sub{
+      margin:0 0 26px;
+      color:var(--ink-soft);
+      font-size:15px;
+    }
+
+    /* Card / sección */
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+      padding:18px 18px 10px;
+      margin:18px 0 26px;
+      position:relative;
+      overflow:hidden;
+    }
+    .card::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(600px 150px at 20% -20%, rgba(77,210,255,.07), transparent 60%),
+                  radial-gradient(600px 150px at 80% -30%, rgba(129,154,255,.05), transparent 55%);
+      pointer-events:none;
+    }
+
+    .card h2{
+      font-family:Outfit, Inter, sans-serif;
+      font-weight:700;
+      font-size:clamp(18px, 1.2vw + 12px, 24px);
+      margin:6px 4px 12px;
+      color:#f2f7ff;
+      letter-spacing:.2px;
+    }
+
+    /* Badges / créditos */
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:12px;
+      color:var(--muted);
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+      padding:6px 10px;
+      border-radius:999px;
+      margin:10px 4px 4px;
+      backdrop-filter: blur(6px);
+    }
+    .dot{
+      width:8px; height:8px; border-radius:50%;
+      background:var(--accent);
+      box-shadow:0 0 0 3px var(--ring);
+    }
+
+    /* Contenedor de iframes/embeds */
+    .viz{
+      margin:8px 0 6px;
+      border-radius:12px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.05);
+      background:#0e1217;
+    }
+    /* responsive ratio helper para iframes si lo necesitaras
+       .viz .ratio-16x9{ position:relative; padding-top:56.25%;}
+       .viz .ratio-16x9 iframe{ position:absolute; inset:0; width:100%; height:100%;}
+    */
+
+    /* Imagen (RawGraphs) */
+    .viz img{ width:100%; height:auto; display:block; }
+
+    /* Tableau alto auto (se ajusta por script) */
+    .tableauPlaceholder, .tableauPlaceholder object{
+      width:100%;
+      border:0;
+      border-radius:12px;
+    }
+
+    /* Separador suave */
+    .sep{
+      height:1px;
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+      margin:24px 0;
+    }
+
+    /* Footer mini */
+    .foot-note{
+      margin:8px 2px 0;
+      color:var(--muted);
+      font-size:12px;
+      text-align:center;
+    }
+
+    /* Links */
+    a{ color:#9be5ff; text-decoration:none }
+    a:hover{ text-decoration:underline }
+
+    /* Pequeños ajustes responsive */
+    @media (max-width:640px){
+      .badge{ font-size:11px }
+    }
+  </style>
 </head>
+
 <body>
-  <!-- Flourish -->
-  <h2>¿Cómo varía el uso y gasto del transporte público a lo largo de la semana?</h2>
-  <div class="flourish-embed flourish-bar-chart-race" data-src="visualisation/25246188">
-    <script src="https://public.flourish.studio/resources/embed.js"></script>
-    <noscript>
-      <img src="https://public.flourish.studio/visualisation/25246188/thumbnail" width="100%" alt="bar-chart-race visualization" />
-    </noscript>
-  </div>
-  <p style="font-style:italic; text-align:center;">Visualización creada con Flourish</p>
+  <div class="container">
+    <h1 class="page-title">Visualizaciones de uso de transporte público</h1>
+    <p class="page-sub">Exploración interactiva de patrones de uso, gasto y picos horarios con diferentes herramientas.</p>
 
-  <!-- Datawrapper -->
+    <!-- Flourish -->
+    <section class="card">
+      <h2>¿Cómo varía el uso y gasto del transporte público a lo largo de la semana?</h2>
+      <div class="viz">
+        <div class="flourish-embed flourish-bar-chart-race" data-src="visualisation/25246188">
+          <script src="https://public.flourish.studio/resources/embed.js"></script>
+          <noscript>
+            <img src="https://public.flourish.studio/visualisation/25246188/thumbnail" width="100%" alt="bar-chart-race visualization" />
+          </noscript>
+        </div>
+      </div>
+      <span class="badge"><span class="dot"></span> Hecho con <strong>Flourish</strong></span>
+    </section>
 
-  <div style="min-height:449px" id="datawrapper-vis-Ytith">
-    <script type="text/javascript" defer src="https://datawrapper.dwcdn.net/Ytith/embed.js" charset="utf-8" data-target="#datawrapper-vis-Ytith"></script>
-    <noscript>
-      <img src="https://datawrapper.dwcdn.net/Ytith/full.png" alt="Viajes por franja horaria, comparados entre meses (Grouped column chart)" />
-    </noscript>
-  </div>
-  <p style="font-style:italic; text-align:center;">Visualización creada con Datawrapper</p>
+    <!-- Datawrapper -->
+    <section class="card">
+      <h2>¿Cuáles son los horarios pico de ingreso?</h2>
+      <div class="viz">
+        <div id="datawrapper-vis-Ytith" style="min-height:449px">
+          <script type="text/javascript" defer src="https://datawrapper.dwcdn.net/Ytith/embed.js" charset="utf-8" data-target="#datawrapper-vis-Ytith"></script>
+          <noscript>
+            <img src="https://datawrapper.dwcdn.net/Ytith/full.png" alt="Viajes por franja horaria, comparados entre meses (Grouped column chart)" />
+          </noscript>
+        </div>
+      </div>
+      <span class="badge"><span class="dot"></span> Hecho con <strong>Datawrapper</strong></span>
+    </section>
 
-  <!-- RawGraphs -->
- <h2>¿Cuáles son los horarios pico de ingreso?</h2>
-  <div style="text-align:center;">
-    <img src="horaentrada (1).svg" alt="Picos de horas de uso de transporte público" style="max-width:90%; height:auto;">
-  </div>
-  <p style="font-style:italic; text-align:center;">Visualización creada con RawGraphs</p>
+    <!-- RawGraphs -->
+    <section class="card">
+      <h2>Picos de horas de uso de transporte público</h2>
+      <div class="viz">
+        <img src="horaentrada (1).svg" alt="Picos de horas de uso de transporte público">
+      </div>
+      <span class="badge"><span class="dot"></span> Hecho con <strong>RawGraphs</strong></span>
+    </section>
 
-  <!-- Power BI -->
-  <div style="text-align:center;">
-    <iframe title="vistatransporte" width="100%" height="500" 
-      src="https://app.powerbi.com/view?r=eyJrIjoiZTIzMTRlNmEtNzdlMC00ZDk2LWJmYWMtMDMyNTVmYjhlYTg3IiwidCI6ImExZjUwYTk3LTIxYzAtNDlhNy1hOWQ0LWYyNDRlYmI0MmRhNyIsImMiOjR9" 
-      frameborder="0" allowFullScreen="true">
-    </iframe>
-  </div>
-  <p style="font-style:italic; text-align:center;">Dashboard creado con Power BI</p>
+    <!-- Power BI -->
+    <section class="card">
+      <h2>Dashboard interactivo de transporte público (Power BI)</h2>
+      <div class="viz">
+        <iframe title="vistatransporte" width="100%" height="520"
+          src="https://app.powerbi.com/view?r=eyJrIjoiZTIzMTRlNmEtNzdlMC00ZDk2LWJmYWMtMDMyNTVmYjhlYTg3IiwidCI6ImExZjUwYTk3LTIxYzAtNDlhNy1hOWQ0LWYyNDRlYmI0MmRhNyIsImMiOjR9"
+          frameborder="0" allowfullscreen="true">
+        </iframe>
+      </div>
+      <span class="badge"><span class="dot"></span> Hecho con <strong>Power BI</strong></span>
+    </section>
 
-  <!-- Tableau -->
-  <div class='tableauPlaceholder' id='viz1758521864714' style='position: relative'>
-    <noscript>
-      <a href='#'><img alt='Patrones de uso del transporte por día y hora ' 
-        src='https://public.tableau.com/static/images/NN/NNQZQTKRF/1_rss.png' style='border: none' /></a>
-    </noscript>
-    <object class='tableauViz' style='display:none;'>
-      <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> 
-      <param name='embed_code_version' value='3' /> 
-      <param name='path' value='shared/NNQZQTKRF' /> 
-      <param name='toolbar' value='yes' />
-      <param name='static_image' value='https://public.tableau.com/static/images/NN/NNQZQTKRF/1.png' /> 
-      <param name='animate_transition' value='yes' />
-      <param name='display_static_image' value='yes' />
-      <param name='display_spinner' value='yes' />
-      <param name='display_overlay' value='yes' />
-      <param name='display_count' value='yes' />
-      <param name='language' value='en-US' />
-      <param name='filter' value='publish=yes' />
-    </object>
+    <!-- Tableau -->
+    <section class="card">
+      <h2>Patrones de uso del transporte por día y hora</h2>
+      <div class="viz">
+        <div class='tableauPlaceholder' id='viz1758521864714' style='position: relative'>
+          <noscript>
+            <a href='#'><img alt='Patrones de uso del transporte por día y hora'
+              src='https://public.tableau.com/static/images/NN/NNQZQTKRF/1_rss.png' style='border: none' /></a>
+          </noscript>
+          <object class='tableauViz' style='display:none;'>
+            <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+            <param name='embed_code_version' value='3' />
+            <param name='path' value='shared/NNQZQTKRF' />
+            <param name='toolbar' value='yes' />
+            <param name='static_image' value='https://public.tableau.com/static/images/NN/NNQZQTKRF/1.png' />
+            <param name='animate_transition' value='yes' />
+            <param name='display_static_image' value='yes' />
+            <param name='display_spinner' value='yes' />
+            <param name='display_overlay' value='yes' />
+            <param name='display_count' value='yes' />
+            <param name='language' value='en-US' />
+            <param name='filter' value='publish=yes' />
+          </object>
+        </div>
+      </div>
+      <span class="badge"><span class="dot"></span> Hecho con <strong>Tableau</strong></span>
+    </section>
+
+    <div class="sep"></div>
+    <p class="foot-note">© 2025 · Exploración de datos de transporte · Hecho con cariño y varias herramientas 💙</p>
   </div>
-  <script type='text/javascript'>                    
-    var divElement = document.getElementById('viz1758521864714');                    
-    var vizElement = divElement.getElementsByTagName('object')[0];                    
-    vizElement.style.width='100%';
-    vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    
-    var scriptElement = document.createElement('script');                    
-    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    
-    vizElement.parentNode.insertBefore(scriptElement, vizElement);                
+
+  <!-- Script de Tableau (ajusta alto automáticamente) -->
+  <script>
+    const divElement = document.getElementById('viz1758521864714');
+    const vizElement = divElement.getElementsByTagName('object')[0];
+    vizElement.style.width = '100%';
+    vizElement.style.height = (divElement.offsetWidth * 0.68) + 'px';
+    const scriptElement = document.createElement('script');
+    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+    vizElement.parentNode.insertBefore(scriptElement, vizElement);
+
+    // reajuste simple en resize
+    window.addEventListener('resize', () => {
+      vizElement.style.height = (divElement.offsetWidth * 0.68) + 'px';
+    });
   </script>
-  <p style="font-style:italic; text-align:center;">Visualización creada con Tableau</p>
-
 </body>
 </html>
+
 
